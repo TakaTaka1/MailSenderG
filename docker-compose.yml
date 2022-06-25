@@ -1,7 +1,9 @@
 version: '3.8'
 services:
   mailsenderg:
-    build: ./docker
+    build: 
+      context : .
+      dockerfile : ./docker/Dockerfile
     container_name: MailSenderG
     tty: true
     ports:

@@ -1,20 +1,22 @@
 package main
 
 import (
-	"net/http"
-    "github.com/gin-gonic/gin"
+	// "net/http"
+    // "github.com/gin-gonic/gin"      
     // "encoding/json"
-    // "fmt"
     // "log"
-    // "os"    
+    "github.com/joho/godotenv"
+    "fmt"
+    "os"    
 )
 
 func main() {
-    engine:= gin.Default()
-    engine.GET("/", func(c *gin.Context) {
-        c.JSON(http.StatusOK, gin.H{
-            "message": "hello world MailsenderG",
-        })
-    })
-    engine.Run(":3100")
+	err := godotenv.Load(".env")
+		
+	if err != nil {
+		fmt.Printf("Couldn't load : %v", err)
+	} 
+	
+    key := os.Getenv("ENV")
+    fmt.Println(key)
 }
