@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  mailsenderg:
+    build: ./docker
+    container_name: MailSenderG
+    tty: true
+    ports:
+      - "8200:3100"
+    volumes:
+      - ./:/go/src/MailSenderG
