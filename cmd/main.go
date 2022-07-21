@@ -10,14 +10,10 @@ import (
 	"time"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
-    "github.com/joho/godotenv"
-	"reflect"
+	"github.com/joho/godotenv"
 	"strconv"
 )
 
-func P(t interface{}) {
-    fmt.Println(reflect.TypeOf(t))
-}
 
 func main() {
 
@@ -28,7 +24,7 @@ func main() {
 	
 	API_KEY := os.Getenv("API_KEY")
 	TOS := strings.Split(os.Getenv("TOS"), ",")
-    FROM := os.Getenv("FROM")   
+	FROM := os.Getenv("FROM")   
 
 	// 用に支払い金額分を取得して、シート名と金額をメールで送信する
 	foodCostMap := SpreadSheet.ReadSheet("食費!A2:E13")
