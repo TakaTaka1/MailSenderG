@@ -5,6 +5,10 @@ import (
 	"strconv"
 )
 
+func PrintPrice (price int) int {
+	return price
+}
+
 func ReturnPrice(price string)int {
 	var reTPrice int
 	if price != "-" {
