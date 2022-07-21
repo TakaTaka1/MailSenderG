@@ -16,4 +16,4 @@ RUN apk upgrade --update && \
 
 EXPOSE 19000
 
-CMD ["realize", "start", "--build","--run"]
+# CMD ["realize", "start", "--build","--run"]
