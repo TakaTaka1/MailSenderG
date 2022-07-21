@@ -21,8 +21,7 @@ func main() {
 	if err_read != nil {
 		log.Fatalf("error: %v", err_read)
 	}
-	
-	API_KEY := os.Getenv("API_KEY")
+		
 	TOS := strings.Split(os.Getenv("TOS"), ",")
 	FROM := os.Getenv("FROM")   
 
@@ -120,7 +119,7 @@ func main() {
 	// message.AddAttachment(a)
 
 	// メール送信を行い、レスポンスを表示
-	client := sendgrid.NewSendClient(API_KEY)
+	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
 
 	response, err := client.Send(message)
 	if err != nil {
