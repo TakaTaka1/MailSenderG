@@ -5,16 +5,10 @@ import (
 	"strconv"
 )
 
-func PrintPrice (price int) int {
-	return price
-}
-
 func ReturnPrice(price string)int {
-	var reTPrice int
+	reTPrice := 0
 	if price != "-" {
 		reTPrice , _ = strconv.Atoi(price)
-	} else {
-		reTPrice = 0
 	}
 	return reTPrice
 }

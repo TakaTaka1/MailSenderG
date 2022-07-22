@@ -6,6 +6,8 @@
 *.dylib
 .env
 
+secret.json
+
 cd/*
 
 # Test binary, built with `go test -c`

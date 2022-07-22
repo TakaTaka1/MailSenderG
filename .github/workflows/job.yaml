@@ -1,0 +1,45 @@
+on:
+  push:
+  schedule:
+    # - cron: "*/5 * * * *"
+
+jobs:
+  run:
+    name: run
+    runs-on: ubuntu-latest
+    steps:
+      # GOPATH等のセットアップ
+      - name: Set Up
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.18
+
+      # repositoryの中身にアクセスするためにチェックアウト
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # 実行
+      - name: Run
+        run: | 
+          cd cmd
+          go run main.go
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          TOS: ${{ secrets.TOS }}
+          FROM: ${{ secrets.FROM }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          SEND_LIST_1: ${{ secrets.SEND_LIST_1 }}
+          SEND_LIST_2: ${{ secrets.SEND_LIST_2 }}
+          MAIL_SUBJECT: ${{ secrets.MAIL_SUBJECT }}
+          MAIL_HEADER: ${{ secrets.MAIL_HEADER }}
+          MAIL_PO_COMMENT_HTML: ${{ secrets.MAIL_PO_COMMENT_HTML }}
+          TYPE : ${{secrets.TYPE}}
+          PROJECT_ID : ${{secrets.PROJECT_ID}}
+          PRIVATE_KEY_ID : ${{secrets.PRIVATE_KEY_ID}}
+          PRIVATE_KEY : ${{secrets.PRIVATE_KEY}}
+          CLIENT_EMAIL : ${{secrets.CLIENT_EMAIL}}
+          CLIENT_ID : ${{secrets.CLIENT_ID}}
+          AUTH_URI : ${{secrets.AUTH_URI}}
+          TOKEN_URI : ${{secrets.TOKEN_URI}}
+          AUTH_PROVIDER_CERT_URL : ${{secrets.AUTH_PROVIDER_CERT_URL}}
+          CLIENT_CERT_URL : ${{secrets.CLIENT_CERT_URL}}          
