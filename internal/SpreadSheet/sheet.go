@@ -49,7 +49,8 @@ func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
 		os.Getenv("AUTH_PROVIDER_CERT_URL"),
 		os.Getenv("CLIENT_CERT_URL"),
 	}
-	file, _ := json.MarshalIndent(sheet_credentials, "", "")
+	// file, _ := json.MarshalIndent(sheet_credentials, "", "")
+	file, _ := json.Marshal(sheet_credentials)
 	_ = ioutil.WriteFile("./secret.json", file, 0644)	
 
 	// byteArray, _ := ioutil.ReadFile("")
