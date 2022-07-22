@@ -17,10 +17,10 @@ import (
 
 func main() {
 
-	err_read := godotenv.Load("../.env")
-	if err_read != nil {
-		log.Fatalf("error: %v", err_read)
-	}
+	// err_read := godotenv.Load("../.env")
+	// if err_read != nil {
+	// 	log.Fatalf("error: %v", err_read)
+	// }
 		
 	TOS := strings.Split(os.Getenv("TOS"), ",")
 	FROM := os.Getenv("FROM")   

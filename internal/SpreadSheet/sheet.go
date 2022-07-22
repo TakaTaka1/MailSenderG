@@ -29,10 +29,10 @@ type Credential struct {
 
 func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
 	
-	err_read := godotenv.Load("../.env")
-	if err_read != nil {
-		log.Fatalf("error: %v", err_read)
-	}
+	// err_read := godotenv.Load("../.env")
+	// if err_read != nil {
+	// 	log.Fatalf("error: %v", err_read)
+	// }
 
 	SHEET_ID := os.Getenv("SHEET_ID")
 
