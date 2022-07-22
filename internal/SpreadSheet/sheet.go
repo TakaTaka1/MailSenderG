@@ -6,7 +6,7 @@ import (
 	// "fmt"
 	"context"
 	"encoding/json"
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
     "google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 	"MailSenderG/internal/StructData"
