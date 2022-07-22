@@ -35,7 +35,7 @@ func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
 	// }
 
 	SHEET_ID := os.Getenv("SHEET_ID")
-		
+
 	sheet_credentials := Credential{
 		os.Getenv("TYPE"), 
 		os.Getenv("PROJECT_ID"),
@@ -50,8 +50,7 @@ func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
 	}
 	
 	// file, _ := json.MarshalIndent(sheet_credentials, "", "")
-	file, _ := json.Marshal(sheet_credentials)
-	fmt.Print(string(file))
+	file, _ := json.Marshal(sheet_credentials)	
 	_ = ioutil.WriteFile("./secret.json", file, 0644)	
 
 	// byteArray, _ := ioutil.ReadFile("")
