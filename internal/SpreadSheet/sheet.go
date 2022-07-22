@@ -12,6 +12,10 @@ import (
 	"MailSenderG/internal/StructData"
 	// "encoding/base64"
 	"io/ioutil"	
+	// "crypto/rsa"
+	// "crypto/x509"
+	// "encoding/pem"
+	// "errors"
 )
 
 type Credential struct {
@@ -33,9 +37,14 @@ func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
 	// if err_read != nil {
 	// 	log.Fatalf("error: %v", err_read)
 	// }
+	// pkey = readRsaPrivateKey(os.Getenv("PRIVATE_KEY"))
+	// // fmt.Print(p_key)
+	// _ = pkey
+
+
 
 	SHEET_ID := os.Getenv("SHEET_ID")
-
+	// fmt.Print(readRsaPrivateKey(os.Getenv("PRIVATE_KEY")))
 	sheet_credentials := Credential{
 		os.Getenv("TYPE"), 
 		os.Getenv("PROJECT_ID"),
@@ -95,3 +104,44 @@ func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
 	}
 	return dataMap
 }
+
+// func readRsaPrivateKey(pemFile string) (*rsa.PrivateKey, error) {
+//     bytes, err := ioutil.ReadFile(pemFile)
+//     if err != nil {
+//         return nil, err
+//     }
+	
+//     block, _ := pem.Decode(bytes)
+//     if block == nil {
+//         return nil, errors.New("invalid private key data")
+//     }
+
+// 	var key *rsa.PrivateKey
+// 	fmt.Print(block.Type)
+//     if block.Type == "RSA PRIVATE KEY" {
+//         key, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+//         if err != nil {
+//             return nil, err
+//         }
+//     } else if block.Type == "PRIVATE KEY" {
+//         keyInterface, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+//         if err != nil {
+//             return nil, err
+//         }
+//         var ok bool
+//         key, ok = keyInterface.(*rsa.PrivateKey)
+//         if !ok {
+//             return nil, errors.New("not RSA private key")
+//         }
+//     } else {
+//         return nil, fmt.Errorf("invalid private key type : %s", block.Type)
+//     }
+
+//     key.Precompute()
+
+//     if err := key.Validate(); err != nil {
+//         return nil, err
+//     }
+
+//     return key
+// }
