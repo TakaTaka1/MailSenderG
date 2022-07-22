@@ -16,7 +16,7 @@ import (
 
 
 func main() {
-	// temp comment out
+	// TODO Github actions上とローカル上での切り替え方法
 	// err_read := godotenv.Load("../.env")
 	// if err_read != nil {
 	// 	log.Fatalf("error: %v", err_read)

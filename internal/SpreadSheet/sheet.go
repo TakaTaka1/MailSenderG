@@ -11,7 +11,7 @@ import (
 	"google.golang.org/api/sheets/v4"
 	"MailSenderG/internal/StructData"
 	// "encoding/base64"
-	"io/ioutil"	
+	// "io/ioutil"	
 	// "crypto/rsa"
 	// "crypto/x509"
 	// "encoding/pem"
@@ -60,7 +60,7 @@ func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
 	
 	// file, _ := json.MarshalIndent(sheet_credentials, "", "")
 	file, _ := json.Marshal(sheet_credentials)	
-	_ = ioutil.WriteFile("./secret.json", file, 0644)	
+	_ = os.WriteFile("./secret.json", file, 0644)	
 
 	// byteArray, _ := ioutil.ReadFile("")
 	// var jsonObj interface{}
