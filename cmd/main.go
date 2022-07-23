@@ -10,18 +10,20 @@ import (
 	"time"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
-	// "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 	"strconv"
 )
 
 
 func main() {
 	// TODO Github actions上とローカル上での切り替え方法
-	// err_read := godotenv.Load("../.env")
-	// if err_read != nil {
-	// 	log.Fatalf("error: %v", err_read)
-	// }
-		
+	if os.Getenv("ENV") == "" {
+		err_read := godotenv.Load("../.env")
+		if err_read != nil {
+			log.Fatalf("error: %v", err_read)
+		}
+	}
+	
 	TOS := strings.Split(os.Getenv("TOS"), ",")
 	FROM := os.Getenv("FROM")   
 
@@ -45,6 +47,11 @@ func main() {
 	gasCostLastMonth := Price.GetLastMonthPrice(gasCostMap, lastMonth, "光熱費")
 	rentCostLastMonth := Price.GetLastMonthPrice(rentCostMap, lastMonth, "家賃")
 	
+	if gasCostLastMonth["光熱費"].TotalPrice == "-" {
+		fmt.Println("光熱費を入力してください")
+		return
+	}
+
 	totalTaPrice := 0
 	totalMiPrice := 0
 	
@@ -61,7 +68,7 @@ func main() {
 	totalMiPrice += Price.ReturnPrice(waterCostLastMonth["水道費"].MPrice)
 	totalMiPrice += Price.ReturnPrice(gasCostLastMonth["光熱費"].MPrice)
 	totalMiPrice += Price.ReturnPrice(rentCostLastMonth["家賃"].MPrice)
-
+	
 	// メッセージの構築
 	message := mail.NewV3Mail()
 	// 送信元を設定
