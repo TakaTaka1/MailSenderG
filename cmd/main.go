@@ -17,13 +17,39 @@ import (
 
 func main() {
 	// TODO Github actions上とローカル上での切り替え方法
-	if os.Getenv("ENV") == "" {
-		err_read := godotenv.Load("../.env")
+
+	// f, err := os.OpenFile("../.env", os.O_RDONLY, 0)
+	// fmt.Print(f)
+	// if err != nil {
+    // 	if os.IsNotExist(err) {
+    //     	return // ファイルが存在しない
+    // 	}
+    // 	return err // それ以外のエラー(例えばパーミッションがない)
+	// } else {
+	// 	err_read := godotenv.Load("../.env")
+	// 	if err_read != nil {
+	// 		log.Fatalf("error: %v", err_read)
+	// 	}		
+	// }
+	f := "../.env"
+	if _, err := os.Stat(f); err == nil {
+		err_read := godotenv.Load(f)
 		if err_read != nil {
 			log.Fatalf("error: %v", err_read)
-		}
-	}
-	
+		}					
+		fmt.Println("存在します")
+    // 存在します
+	} else {
+		fmt.Println("存在しません")
+	}		
+
+	// if os.Getenv("ENV") == "" {
+	// 	err_read := godotenv.Load("../.env")
+	// 	if err_read != nil {
+	// 		log.Fatalf("error: %v", err_read)
+	// 	}
+	// }
+
 	TOS := strings.Split(os.Getenv("TOS"), ",")
 	FROM := os.Getenv("FROM")   
 

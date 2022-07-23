@@ -6,7 +6,7 @@ import (
 	// "fmt"
 	"context"
 	"encoding/json"
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
     "google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 	"MailSenderG/internal/StructData"
@@ -31,13 +31,7 @@ type Credential struct {
 }
 
 func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
-	if os.Getenv("ENV") == "" {
-		err_read := godotenv.Load("../.env")
-		if err_read != nil {
-			log.Fatalf("error: %v", err_read)
-		}
-	}
-	
+
 	SHEET_ID := os.Getenv("SHEET_ID")
 	
 	sheet_credentials := Credential{
