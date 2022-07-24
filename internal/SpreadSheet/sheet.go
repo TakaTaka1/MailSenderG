@@ -6,7 +6,6 @@ import (
 	// "fmt"
 	"context"
 	"encoding/json"
-	// "github.com/joho/godotenv"
     "google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 	"MailSenderG/internal/StructData"
@@ -30,10 +29,7 @@ type Credential struct {
 	Client_x509_cert_url string `json:"client_x509_cert_url"`
 }
 
-func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
-
-	SHEET_ID := os.Getenv("SHEET_ID")
-	
+func setCredentials() Credential {
 	sheet_credentials := Credential{
 		os.Getenv("TYPE"), 
 		os.Getenv("PROJECT_ID"),
@@ -46,25 +42,14 @@ func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
 		os.Getenv("AUTH_PROVIDER_CERT_URL"),
 		os.Getenv("CLIENT_CERT_URL"),
 	}
+	return sheet_credentials
+}
+
+func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
+	SHEET_ID := os.Getenv("SHEET_ID")
 	
-	// file, _ := json.MarshalIndent(sheet_credentials, "", "")
-	file, _ := json.Marshal(sheet_credentials)	
+	file, _ := json.Marshal(setCredentials())	
 	_ = os.WriteFile("./secret.json", file, 0644)	
-
-	// byteArray, _ := ioutil.ReadFile("")
-	// var jsonObj interface{}
-	// test := json.Unmarshal(byteArray, &jsonObj)
-
-	
-	// fmt.Print(byteArray)
-	
-	// jsonエンコード
-	// outputJson, _ := json.Marshal("")
-	// fmt.Print(outputJson)
-	// // outputJson, err := json.Marshal(os.Getenv("SEACRET"))
-	// if err != nil {
-	// 	panic(err)
-	// }
 	
 	credential := option.WithCredentialsFile("./secret.json")
     srv, err := sheets.NewService(context.TODO(), credential)
@@ -93,44 +78,3 @@ func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
 	}
 	return dataMap
 }
-
-// func readRsaPrivateKey(pemFile string) (*rsa.PrivateKey, error) {
-//     bytes, err := ioutil.ReadFile(pemFile)
-//     if err != nil {
-//         return nil, err
-//     }
-	
-//     block, _ := pem.Decode(bytes)
-//     if block == nil {
-//         return nil, errors.New("invalid private key data")
-//     }
-
-// 	var key *rsa.PrivateKey
-// 	fmt.Print(block.Type)
-//     if block.Type == "RSA PRIVATE KEY" {
-//         key, err = x509.ParsePKCS1PrivateKey(block.Bytes)
-//         if err != nil {
-//             return nil, err
-//         }
-//     } else if block.Type == "PRIVATE KEY" {
-//         keyInterface, err := x509.ParsePKCS8PrivateKey(block.Bytes)
-//         if err != nil {
-//             return nil, err
-//         }
-//         var ok bool
-//         key, ok = keyInterface.(*rsa.PrivateKey)
-//         if !ok {
-//             return nil, errors.New("not RSA private key")
-//         }
-//     } else {
-//         return nil, fmt.Errorf("invalid private key type : %s", block.Type)
-//     }
-
-//     key.Precompute()
-
-//     if err := key.Validate(); err != nil {
-//         return nil, err
-//     }
-
-//     return key
-// }

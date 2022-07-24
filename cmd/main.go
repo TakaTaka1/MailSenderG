@@ -5,8 +5,9 @@ import (
 	"log"
 	"os"
 	"strings"
-	"MailSenderG/internal/Price" // go install MailSenderG/internal/Price
-	"MailSenderG/internal/SpreadSheet"	
+	"MailSenderG/internal/Price"
+	"MailSenderG/internal/SpreadSheet"
+	"MailSenderG/internal/Mail"
 	"time"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -16,21 +17,7 @@ import (
 
 
 func main() {
-	// TODO Github actions上とローカル上での切り替え方法
-
-	// f, err := os.OpenFile("../.env", os.O_RDONLY, 0)
-	// fmt.Print(f)
-	// if err != nil {
-    // 	if os.IsNotExist(err) {
-    //     	return // ファイルが存在しない
-    // 	}
-    // 	return err // それ以外のエラー(例えばパーミッションがない)
-	// } else {
-	// 	err_read := godotenv.Load("../.env")
-	// 	if err_read != nil {
-	// 		log.Fatalf("error: %v", err_read)
-	// 	}		
-	// }
+	// if file exists 	
 	f := "../.env"
 	if _, err := os.Stat(f); err == nil {
 		err_read := godotenv.Load(f)
@@ -43,13 +30,7 @@ func main() {
 		fmt.Println("存在しません")
 	}		
 
-	// if os.Getenv("ENV") == "" {
-	// 	err_read := godotenv.Load("../.env")
-	// 	if err_read != nil {
-	// 		log.Fatalf("error: %v", err_read)
-	// 	}
-	// }
-
+	Mail.TestMail()
 	TOS := strings.Split(os.Getenv("TOS"), ",")
 	FROM := os.Getenv("FROM")   
 
@@ -116,7 +97,6 @@ func main() {
 	p2.SetSubstitution("%fullname%", os.Getenv("SEND_LIST_2"))
 	p2.SetSubstitution("%familyname%", os.Getenv("SEND_LIST_2"))
 	message.AddPersonalizations(p2)
-
 
 	// 件名を設定
 	message.Subject = os.Getenv("MAIL_SUBJECT")
