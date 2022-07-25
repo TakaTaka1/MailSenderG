@@ -23,3 +23,32 @@ func TestReturnPrice(t *testing.T) {
 		}
 	})	
 }
+
+func TestCheckDiffPrice(t *testing.T) {
+	t.Run("CheckDiffPrice" , func(t *testing.T) {
+		t.Log("MPrice >= TPrice")
+		result := CheckDiffPrice(100,10)
+		expext := 90
+		if result != expext {
+			t.Error("\nActual： ", result, "\nExpectation： ", expext)
+		}
+	})
+	t.Run("CheckDiffPrice" , func(t *testing.T) {
+		t.Log("MPrice < TPrice")
+		result := CheckDiffPrice(10,100)
+		expext := 90
+		if result != expext {
+			t.Error("\nActual： ", result, "\nExpectation： ", expext)
+		}
+	})
+
+	t.Run("CheckDiffPrice" , func(t *testing.T) {
+		t.Log("MPrice == TPrice")
+		result := CheckDiffPrice(100,100)
+		expext := 0
+		if result != expext {
+			t.Error("\nActual： ", result, "\nExpectation： ", expext)
+		}
+	})	
+	
+}

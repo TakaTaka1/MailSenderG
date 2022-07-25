@@ -27,3 +27,11 @@ func GetLastMonthPrice(costMap map[int]StructData.SheetData, lastMonth string, c
 	}
 	return row
 }
+
+func CheckDiffPrice(totalMiPrice, totalTaPrice int) int{
+	diffPrice := totalMiPrice - totalTaPrice
+	if totalMiPrice < totalTaPrice {
+		diffPrice = totalTaPrice - totalMiPrice
+	}
+	return diffPrice
+}

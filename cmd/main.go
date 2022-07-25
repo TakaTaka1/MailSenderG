@@ -24,10 +24,10 @@ func main() {
 		if err_read != nil {
 			log.Fatalf("error: %v", err_read)
 		}					
-		fmt.Println("存在します")
+		fmt.Println(".env is existed")
     // 存在します
 	} else {
-		fmt.Println("存在しません")
+		fmt.Println(".env is not existed")
 	}		
 
 	Mail.TestMail()
@@ -100,12 +100,7 @@ func main() {
 
 	// 件名を設定
 	message.Subject = os.Getenv("MAIL_SUBJECT")
-	var diffPrice int
-	if totalMiPrice >= totalTaPrice {
-		diffPrice = totalMiPrice - totalTaPrice
-	} else if totalMiPrice <= totalTaPrice {
-		diffPrice = totalTaPrice - totalMiPrice
-	}
+	diffPrice := Price.CheckDiffPrice(totalMiPrice, totalTaPrice)
 
 	var mailHeaderHtml = os.Getenv("MAIL_HEADER")
 	var mailTaHtml = "<strong>👨‍💻【" + os.Getenv("SEND_LIST_1") + "】👨‍💻</strong><br>" + "食費: " + foodCostLastMonth["食費"].TPrice + "<br>" + "日用品: " + houseHoldItemLastMonth["日用品"].TPrice + "<br>" + "雑費: " + generalCostLastMonth["雑費"].TPrice + "<br>" + "水道費: " + waterCostLastMonth["水道費"].TPrice + "<br>" + "光熱費: " + gasCostLastMonth["光熱費"].TPrice + "<br>" + "家賃: " + rentCostLastMonth["家賃"].TPrice + "<br>" + "【合計】 : " + strconv.Itoa(totalTaPrice) + "<br><br>"
