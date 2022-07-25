@@ -7,7 +7,7 @@ import (
 	"strings"
 	"MailSenderG/internal/Price"
 	"MailSenderG/internal/SpreadSheet"
-	"MailSenderG/internal/Mail"
+	_"MailSenderG/internal/Mail"
 	"time"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -18,7 +18,7 @@ import (
 
 func main() {
 	// if file exists 	
-	f := "../.env"
+	f := "./.env"
 	if _, err := os.Stat(f); err == nil {
 		err_read := godotenv.Load(f)
 		if err_read != nil {
@@ -29,8 +29,8 @@ func main() {
 	} else {
 		fmt.Println(".env is not existed")
 	}		
-
-	Mail.TestMail()
+	
+	// Mail.TestMail()
 	TOS := strings.Split(os.Getenv("TOS"), ",")
 	FROM := os.Getenv("FROM")   
 

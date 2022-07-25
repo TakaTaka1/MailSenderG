@@ -1,7 +1,8 @@
 package Price
 
 import (
-	"MailSenderG/internal/StructData"
+	// "MailSenderG/internal/StructData"
+	"MailSenderG/data/StructData"
 	"strconv"
 )
 

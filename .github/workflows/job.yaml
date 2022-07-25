@@ -1,28 +1,29 @@
 on:
   push:
-  # schedule:
+  # TODO schedule:
   #   # - cron: "*/5 * * * *"
 
 jobs:
   run:
     name: run
     runs-on: ubuntu-latest
-    steps:
-      # GOPATH等のセットアップ
-      - name: Set Up
-        uses: actions/setup-go@v2
+    steps:      
+      - name: Set Up Go 1.18
+        uses: actions/setup-go@v3
         with:
           go-version: ^1.18
 
       # repositoryの中身にアクセスするためにチェックアウト
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: Test code
+        run : go test ./internal/...
 
       # 実行
       - name: Run
-        run: | 
-          cd cmd
-          go run main.go
+        run: |           
+          go run ./cmd/main.go
         env:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           TOS: ${{ secrets.TOS }}

@@ -3,17 +3,12 @@ package SpreadSheet
 import (
 	"os"
 	"log"
-	// "fmt"
+	_"fmt"
 	"context"
 	"encoding/json"
     "google.golang.org/api/option"
-	"google.golang.org/api/sheets/v4"
-	"MailSenderG/internal/StructData"
-	// "encoding/base64"
-	// "crypto/rsa"
-	// "crypto/x509"
-	// "encoding/pem"
-	// "errors"
+	"google.golang.org/api/sheets/v4"	
+	"MailSenderG/data/StructData"
 )
 
 type Credential struct {
@@ -27,6 +22,10 @@ type Credential struct {
 	Token_uri string `json:"token_uri"`
 	Auth_provider_x509_cert_url string `json:"auth_provider_x509_cert_url"`
 	Client_x509_cert_url string `json:"client_x509_cert_url"`
+}
+
+func RetSheet() string {
+	return "Sheet"
 }
 
 func setCredentials() Credential {

@@ -1,7 +1,7 @@
 package Mail
 
-import "fmt"
+import _"fmt"
 
-func TestMail () {
-	fmt.Println("Mail")
+func RetMail () string {
+	return "Mail"
 }
