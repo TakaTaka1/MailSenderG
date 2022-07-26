@@ -22,7 +22,7 @@ jobs:
 
       # 実行
       - name: Run
-        run: |           
+        run: |
           go run ./cmd/main.go
         env:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}

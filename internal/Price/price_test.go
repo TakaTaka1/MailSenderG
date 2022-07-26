@@ -52,3 +52,14 @@ func TestCheckDiffPrice(t *testing.T) {
 	})	
 	
 }
+
+func TestCheckCost(t *testing.T) {
+	t.Run("CheckCost", func(t *testing.T) {
+		t.Log("Cost is filled")
+		result := CheckCost("-")
+		expect := "光熱費を入力してください"
+		if result != expext {
+			t.Error("\nActual： ", result, "\nExpectation： ", expext)
+		}		
+	})
+}

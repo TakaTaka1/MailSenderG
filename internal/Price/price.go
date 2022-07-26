@@ -1,9 +1,8 @@
 package Price
 
 import (
-	// "MailSenderG/internal/StructData"
 	"MailSenderG/data/StructData"
-	"strconv"
+	"strconv"	
 )
 
 func ReturnPrice(price string)int {
@@ -35,4 +34,11 @@ func CheckDiffPrice(totalMiPrice, totalTaPrice int) int{
 		diffPrice = totalTaPrice - totalMiPrice
 	}
 	return diffPrice
+}
+
+func CheckCost(costTotalPrice string) string{
+	if costTotalPrice == "-" {		
+		return "光熱費を入力してください"
+	}
+	return costTotalPrice
 }

@@ -54,10 +54,7 @@ func main() {
 	gasCostLastMonth := Price.GetLastMonthPrice(gasCostMap, lastMonth, "光熱費")
 	rentCostLastMonth := Price.GetLastMonthPrice(rentCostMap, lastMonth, "家賃")
 	
-	if gasCostLastMonth["光熱費"].TotalPrice == "-" {
-		fmt.Println("光熱費を入力してください")
-		return
-	}
+	Price.CheckCost(gasCostLastMonth["光熱費"].TotalPrice)
 
 	totalTaPrice := 0
 	totalMiPrice := 0
