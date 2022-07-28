@@ -8,6 +8,7 @@ import (
 	"MailSenderG/internal/Price"
 	"MailSenderG/internal/SpreadSheet"
 	_"MailSenderG/internal/Mail"
+	"MailSenderG/data/ConstData"
 	"time"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -47,31 +48,31 @@ func main() {
 	lastMonth := t.AddDate(0,-1,0).Format("200601")
 	
 	// 先月の分のレコードを取得する
-	foodCostLastMonth := Price.GetLastMonthPrice(foodCostMap, lastMonth, "食費")	
-	houseHoldItemLastMonth := Price.GetLastMonthPrice(houseHoldItemMap, lastMonth, "日用品")
-	generalCostLastMonth := Price.GetLastMonthPrice(generalCostMap, lastMonth, "雑費")
-	waterCostLastMonth := Price.GetLastMonthPrice(waterCostMap, lastMonth, "水道費")
-	gasCostLastMonth := Price.GetLastMonthPrice(gasCostMap, lastMonth, "光熱費")
-	rentCostLastMonth := Price.GetLastMonthPrice(rentCostMap, lastMonth, "家賃")
+	foodCostLastMonth := Price.GetLastMonthPrice(foodCostMap, lastMonth, ConstData.FoodCost)
+	houseHoldItemLastMonth := Price.GetLastMonthPrice(houseHoldItemMap, lastMonth, ConstData.HouseHoldItem)
+	generalCostLastMonth := Price.GetLastMonthPrice(generalCostMap, lastMonth, ConstData.GeneralCost)
+	waterCostLastMonth := Price.GetLastMonthPrice(waterCostMap, lastMonth, ConstData.WaterCost)
+	gasCostLastMonth := Price.GetLastMonthPrice(gasCostMap, lastMonth, ConstData.GasCost)
+	rentCostLastMonth := Price.GetLastMonthPrice(rentCostMap, lastMonth, ConstData.RentCost)
 	
-	Price.CheckCost(gasCostLastMonth["光熱費"].TotalPrice)
+	// Price.CheckCost(gasCostLastMonth["光熱費"].TotalPrice)
 
 	totalTaPrice := 0
 	totalMiPrice := 0
 	
-	totalTaPrice += Price.ReturnPrice(foodCostLastMonth["食費"].TPrice)
-	totalTaPrice += Price.ReturnPrice(houseHoldItemLastMonth["日用品"].TPrice)
-	totalTaPrice += Price.ReturnPrice(generalCostLastMonth["雑費"].TPrice)
-	totalTaPrice += Price.ReturnPrice(waterCostLastMonth["水道費"].TPrice)
-	totalTaPrice += Price.ReturnPrice(gasCostLastMonth["光熱費"].TPrice)
-	totalTaPrice += Price.ReturnPrice(rentCostLastMonth["家賃"].TPrice)
+	totalTaPrice += Price.ReturnPrice(foodCostLastMonth[ConstData.FoodCost].TPrice)
+	totalTaPrice += Price.ReturnPrice(houseHoldItemLastMonth[ConstData.HouseHoldItem].TPrice)
+	totalTaPrice += Price.ReturnPrice(generalCostLastMonth[ConstData.GeneralCost].TPrice)
+	totalTaPrice += Price.ReturnPrice(waterCostLastMonth[ConstData.WaterCost].TPrice)
+	totalTaPrice += Price.ReturnPrice(gasCostLastMonth[ConstData.GasCost].TPrice)
+	totalTaPrice += Price.ReturnPrice(rentCostLastMonth[ConstData.RentCost].TPrice)
 	
-	totalMiPrice += Price.ReturnPrice(foodCostLastMonth["食費"].MPrice)
-	totalMiPrice += Price.ReturnPrice(houseHoldItemLastMonth["日用品"].MPrice)
-	totalMiPrice += Price.ReturnPrice(generalCostLastMonth["雑費"].MPrice)
-	totalMiPrice += Price.ReturnPrice(waterCostLastMonth["水道費"].MPrice)
-	totalMiPrice += Price.ReturnPrice(gasCostLastMonth["光熱費"].MPrice)
-	totalMiPrice += Price.ReturnPrice(rentCostLastMonth["家賃"].MPrice)
+	totalMiPrice += Price.ReturnPrice(foodCostLastMonth[ConstData.FoodCost].MPrice)
+	totalMiPrice += Price.ReturnPrice(houseHoldItemLastMonth[ConstData.HouseHoldItem].MPrice)
+	totalMiPrice += Price.ReturnPrice(generalCostLastMonth[ConstData.GeneralCost].MPrice)
+	totalMiPrice += Price.ReturnPrice(waterCostLastMonth[ConstData.WaterCost].MPrice)
+	totalMiPrice += Price.ReturnPrice(gasCostLastMonth[ConstData.GasCost].MPrice)
+	totalMiPrice += Price.ReturnPrice(rentCostLastMonth[ConstData.RentCost].MPrice)
 	
 	// メッセージの構築
 	message := mail.NewV3Mail()

@@ -46,26 +46,22 @@ func setCredentials() Credential {
 
 func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
 	SHEET_ID := os.Getenv("SHEET_ID")
-	
 	file, _ := json.Marshal(setCredentials())	
-	_ = os.WriteFile("./secret.json", file, 0644)	
-	
+	_ = os.WriteFile("./secret.json", file, 0644)
 	credential := option.WithCredentialsFile("./secret.json")
-    srv, err := sheets.NewService(context.TODO(), credential)
-    if err != nil {
-        log.Fatal(err)
+	srv, err := sheets.NewService(context.TODO(), credential)
+	if err != nil {
+	    log.Fatal(err)
 	}
-
+	// TODO 別の方法または工夫した方が良さそう
 	_ = os.Remove("./secret.json")
-
 	resp, err := srv.Spreadsheets.Values.Get(SHEET_ID,sheetNameRange).Do()
 	if err != nil {
-        log.Fatalln(err)
-    }
-    if len(resp.Values) == 0 {
-        log.Fatalln("data not found")
+		log.Fatalln(err)
 	}
-
+	if len(resp.Values) == 0 {
+		log.Fatalln("data not found")
+	}
 	var dataMap = make(map[int]StructData.SheetData)
 	for i, row := range resp.Values {
 		dataMap[i] = StructData.SheetData{
