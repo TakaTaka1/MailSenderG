@@ -7,28 +7,22 @@ import (
 	"context"
 	"encoding/json"
     "google.golang.org/api/option"
-	"google.golang.org/api/sheets/v4"	
+	"google.golang.org/api/sheets/v4"
 	"MailSenderG/data/StructData"
 )
 
-type credential struct {
-	Type   string    `json:"type"`
-	Project_id string `json:"project_id"`
-	Private_key_id string `json:"private_key_id"`
-	Private_key string `json:"private_key"`
-	Client_email string `json:"client_email"`
-	Client_id string `json:"client_id"`
-	Auth_uri string `json:"auth_uri"`
-	Token_uri string `json:"token_uri"`
-	Auth_provider_x509_cert_url string `json:"auth_provider_x509_cert_url"`
-	Client_x509_cert_url string `json:"client_x509_cert_url"`
+type SheetService interface {
+	ReadSheet(sheetNameRange string) map[int]StructData.SheetData
 }
 
-func RetSheet() string {
-	return "Sheet"
+type sheetService struct {
 }
 
-func setCredentials() credential {
+func NewSheetService() *sheetService {
+	return &sheetService{}
+}
+
+func (s *sheetService) tmpSetCredentials() credential {
 	sheet_credentials := credential{
 		os.Getenv("TYPE"), 
 		os.Getenv("PROJECT_ID"),
@@ -44,9 +38,9 @@ func setCredentials() credential {
 	return sheet_credentials
 }
 
-func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
+func (s *sheetService) TmpReadSheet (sheetNameRange string) map[int]StructData.SheetData{
 	SHEET_ID := os.Getenv("SHEET_ID")
-	file, _ := json.Marshal(setCredentials())	
+	file, _ := json.Marshal(s.tmpSetCredentials())	
 	_ = os.WriteFile("./secret.json", file, 0644)
 	credential := option.WithCredentialsFile("./secret.json")
 	srv, err := sheets.NewService(context.TODO(), credential)
@@ -72,4 +66,9 @@ func ReadSheet(sheetNameRange string) map[int]StructData.SheetData {
 						row[4].(string)}
 	}
 	return dataMap
+}
+
+func (s *sheetService)SetEachCost(costType string) map[int]StructData.SheetData{
+	costRange := "!A2:E13"
+	return s.TmpReadSheet(costType + costRange)
 }

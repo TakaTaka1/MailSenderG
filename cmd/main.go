@@ -1,6 +1,7 @@
 package main
 
 import (
+	// "github.com/go-sql-driver/mysql"
 	"fmt"
 	"log"
 	"os"
@@ -42,7 +43,10 @@ func main() {
 	waterCostMap := SpreadSheet.ReadSheet("水道費!A2:E13")
 	gasCostMap := SpreadSheet.ReadSheet("光熱費!A2:E13")
 	rentCostMap := SpreadSheet.ReadSheet("家賃!A2:E13")
-    
+	
+	sheetService := SpreadSheet.NewSheetService()
+	fmt.Println(sheetService.SetEachCost("食費"))
+
 	// 先月の日付取得
 	t := time.Now() // 現在時刻を実行環境のタイムゾーンで取得
 	lastMonth := t.AddDate(0,-1,0).Format("200601")
