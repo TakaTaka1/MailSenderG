@@ -7,7 +7,7 @@ import (
 	"context"
     "google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
-	"MailSenderG/Utils"
+	"MailSenderG/utils"
 	"MailSenderG/data/StructData"
 )
 
@@ -30,10 +30,6 @@ func (sp *SheetRepository) prepSheet() *sheets.Service{
 	}
 	_ = os.Remove("./secret.json")
 	return srv
-}
-
-func (sp *SheetRepository) Rethoge() string {
-	return "from sheetRepository"
 }
 
 func (sp *SheetRepository) RetSheetData(sheetNameRange string) map[int]StructData.SheetData {
