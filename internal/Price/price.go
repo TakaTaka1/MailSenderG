@@ -13,7 +13,7 @@ func ReturnPrice(price string)int {
 	return reTPrice
 }
 
-func GetLastMonthPrice(costMap map[int]StructData.SheetData, lastMonth string, costName string) map[string]StructData.SheetData {		
+func GetLastMonthPrice(costMap map[int]StructData.SheetData, lastMonth string, costName string) map[string]StructData.SheetData {
 	var row = make(map[string]StructData.SheetData)
 	for _,v := range costMap {		
 		if lastMonth == v.Date {

@@ -3,7 +3,6 @@ module MailSenderG
 go 1.18
 
 require (
-	github.com/go-sql-driver/mysql v1.6.0
 	github.com/joho/godotenv v1.4.0
 	github.com/sendgrid/sendgrid-go v3.11.1+incompatible
 	google.golang.org/api v0.85.0

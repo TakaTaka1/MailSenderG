@@ -5,11 +5,15 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 	"strings"
 	"MailSenderG/internal/Price"
 	"MailSenderG/internal/SpreadSheet"
 	_"MailSenderG/internal/Mail"
-	"MailSenderG/data/ConstData"
+	_"MailSenderG/data/ConstData"
+	"MailSenderG/infrastructure"
+	"MailSenderG/data/StructData"
+	"MailSenderG/usecase"
 	"time"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -32,51 +36,34 @@ func main() {
 		fmt.Println(".env is not existed")
 	}		
 	
-	// Mail.TestMail()
-	TOS := strings.Split(os.Getenv("TOS"), ",")
-	FROM := os.Getenv("FROM")   
+	// TODO
+	sheetRepo := infrastructure.NewSheetRepository()	
+	sheet := Usecase.NewSheetService(sheetRepo)
+	vStruct := reflect.Indirect(reflect.ValueOf(SpreadSheet.RetSheetNameStruct()))
+	vType := vStruct.Type()
 
-	// 用に支払い金額分を取得して、シート名と金額をメールで送信する
-	foodCostMap := SpreadSheet.ReadSheet("食費!A2:E13")
-	houseHoldItemMap := SpreadSheet.ReadSheet("日用品!A2:E13")
-	generalCostMap := SpreadSheet.ReadSheet("雑費!A2:E13")
-	waterCostMap := SpreadSheet.ReadSheet("水道費!A2:E13")
-	gasCostMap := SpreadSheet.ReadSheet("光熱費!A2:E13")
-	rentCostMap := SpreadSheet.ReadSheet("家賃!A2:E13")
-	
-	sheetService := SpreadSheet.NewSheetService()
-	fmt.Println(sheetService.SetEachCost("食費"))
-
-	// 先月の日付取得
+	// TODO 先月の日付取得
 	t := time.Now() // 現在時刻を実行環境のタイムゾーンで取得
 	lastMonth := t.AddDate(0,-1,0).Format("200601")
 	
-	// 先月の分のレコードを取得する
-	foodCostLastMonth := Price.GetLastMonthPrice(foodCostMap, lastMonth, ConstData.FoodCost)
-	houseHoldItemLastMonth := Price.GetLastMonthPrice(houseHoldItemMap, lastMonth, ConstData.HouseHoldItem)
-	generalCostLastMonth := Price.GetLastMonthPrice(generalCostMap, lastMonth, ConstData.GeneralCost)
-	waterCostLastMonth := Price.GetLastMonthPrice(waterCostMap, lastMonth, ConstData.WaterCost)
-	gasCostLastMonth := Price.GetLastMonthPrice(gasCostMap, lastMonth, ConstData.GasCost)
-	rentCostLastMonth := Price.GetLastMonthPrice(rentCostMap, lastMonth, ConstData.RentCost)
-	
-	// Price.CheckCost(gasCostLastMonth["光熱費"].TotalPrice)
-
+	// TODO 値オブジェクトにする
 	totalTaPrice := 0
 	totalMiPrice := 0
+	costs := map[string]StructData.SheetData{}
 	
-	totalTaPrice += Price.ReturnPrice(foodCostLastMonth[ConstData.FoodCost].TPrice)
-	totalTaPrice += Price.ReturnPrice(houseHoldItemLastMonth[ConstData.HouseHoldItem].TPrice)
-	totalTaPrice += Price.ReturnPrice(generalCostLastMonth[ConstData.GeneralCost].TPrice)
-	totalTaPrice += Price.ReturnPrice(waterCostLastMonth[ConstData.WaterCost].TPrice)
-	totalTaPrice += Price.ReturnPrice(gasCostLastMonth[ConstData.GasCost].TPrice)
-	totalTaPrice += Price.ReturnPrice(rentCostLastMonth[ConstData.RentCost].TPrice)
+	for g :=0; g<vType.NumField(); g++ {
+		ft := vType.Field(g)		
+		fv := vStruct.FieldByName(ft.Name)
+		costMap := sheet.Read(sheet.SetCost(fv.String()))
+		costLastMonth := Price.GetLastMonthPrice(costMap, lastMonth, fv.String())
+		costs[fv.String()] = costLastMonth[fv.String()]
+		totalTaPrice += Price.ReturnPrice(costLastMonth[fv.String()].TPrice)
+		totalMiPrice += Price.ReturnPrice(costLastMonth[fv.String()].MPrice)
+	}
 	
-	totalMiPrice += Price.ReturnPrice(foodCostLastMonth[ConstData.FoodCost].MPrice)
-	totalMiPrice += Price.ReturnPrice(houseHoldItemLastMonth[ConstData.HouseHoldItem].MPrice)
-	totalMiPrice += Price.ReturnPrice(generalCostLastMonth[ConstData.GeneralCost].MPrice)
-	totalMiPrice += Price.ReturnPrice(waterCostLastMonth[ConstData.WaterCost].MPrice)
-	totalMiPrice += Price.ReturnPrice(gasCostLastMonth[ConstData.GasCost].MPrice)
-	totalMiPrice += Price.ReturnPrice(rentCostLastMonth[ConstData.RentCost].MPrice)
+	// TODO
+	TOS := strings.Split(os.Getenv("TOS"), ",")
+	FROM := os.Getenv("FROM")
 	
 	// メッセージの構築
 	message := mail.NewV3Mail()
@@ -105,28 +92,12 @@ func main() {
 	diffPrice := Price.CheckDiffPrice(totalMiPrice, totalTaPrice)
 
 	var mailHeaderHtml = os.Getenv("MAIL_HEADER")
-	var mailTaHtml = "<strong>👨‍💻【" + os.Getenv("SEND_LIST_1") + "】👨‍💻</strong><br>" + "食費: " + foodCostLastMonth["食費"].TPrice + "<br>" + "日用品: " + houseHoldItemLastMonth["日用品"].TPrice + "<br>" + "雑費: " + generalCostLastMonth["雑費"].TPrice + "<br>" + "水道費: " + waterCostLastMonth["水道費"].TPrice + "<br>" + "光熱費: " + gasCostLastMonth["光熱費"].TPrice + "<br>" + "家賃: " + rentCostLastMonth["家賃"].TPrice + "<br>" + "【合計】 : " + strconv.Itoa(totalTaPrice) + "<br><br>"
-	var mailMiHtml = "<strong>🤷‍♀【" + os.Getenv("SEND_LIST_2") + "】🤷‍♀️</strong><br>" + "食費: " + foodCostLastMonth["食費"].MPrice + "<br>" + "日用品: " + houseHoldItemLastMonth["日用品"].MPrice + "<br>" + "雑費: " + generalCostLastMonth["雑費"].MPrice + "<br>" + "水道費: " + waterCostLastMonth["水道費"].MPrice + "<br>" + "光熱費: " + gasCostLastMonth["光熱費"].MPrice + "<br>" + "家賃: " + rentCostLastMonth["家賃"].MPrice + "<br>" + "【合計】 : " + strconv.Itoa(totalMiPrice) + "<br><br>"
+	var mailTaHtml = "<strong>👨‍💻【" + os.Getenv("SEND_LIST_1") + "】👨‍💻</strong><br>" + "食費: " + costs["食費"].TPrice + "<br>" + "日用品: " + costs["日用品"].TPrice + "<br>" + "雑費: " + costs["雑費"].TPrice + "<br>" + "水道費: " + costs["水道費"].TPrice + "<br>" + "光熱費: " + costs["光熱費"].TPrice + "<br>" + "家賃: " + costs["家賃"].TPrice + "<br>" + "【合計】 : " + strconv.Itoa(totalTaPrice) + "<br><br>"
+	var mailMiHtml = "<strong>🤷‍♀【" + os.Getenv("SEND_LIST_2") + "】🤷‍♀️</strong><br>" + "食費: " + costs["食費"].MPrice + "<br>" + "日用品: " + costs["日用品"].MPrice + "<br>" + "雑費: " + costs["雑費"].MPrice + "<br>" + "水道費: " + costs["水道費"].MPrice + "<br>" + "光熱費: " + costs["光熱費"].MPrice + "<br>" + "家賃: " + costs["家賃"].MPrice + "<br>" + "【合計】 : " + strconv.Itoa(totalMiPrice) + "<br><br>"	
 	var mailDiffHtml = "差分: 💴" + strconv.Itoa(diffPrice) + "<br><br>"
 	var mailPokioCommentHtml = os.Getenv("MAIL_PO_COMMENT_HTML")
 	c := mail.NewContent("text/html",mailHeaderHtml + mailTaHtml + mailMiHtml + mailDiffHtml + mailPokioCommentHtml)
 	message.AddContent(c)
-
-	// カテゴリ情報を付加
-	// message.AddCategories("category1")
-	// カスタムヘッダを指定
-	// message.SetHeader("X-Sent-Using", "SendGrid-API")
-	// 画像ファイルを添付
-	// a := mail.NewAttachment()
-	// file, _ := os.OpenFile("./gif.gif", os.O_RDONLY, 0600)
-	// defer file.Close()
-	// data, _ := ioutil.ReadAll(file)
-	// data_enc := base64.StdEncoding.EncodeToString(data)
-	// a.SetContent(data_enc)
-	// a.SetType("image/gif")
-	// a.SetFilename("owl.gif")
-	// a.SetDisposition("attachment")
-	// message.AddAttachment(a)
 
 	// メール送信を行い、レスポンスを表示
 	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
@@ -134,7 +105,7 @@ func main() {
 	response, err := client.Send(message)
 	if err != nil {
 		log.Println(err)
-	} else {		
+	} else {
 		fmt.Println(response.StatusCode)
 		fmt.Println(response.Body)
 		fmt.Println(response.Headers)
