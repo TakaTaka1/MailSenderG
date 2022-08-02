@@ -1,7 +1,6 @@
 package main
 
-import (
-	// "github.com/go-sql-driver/mysql"
+import (	
 	"fmt"
 	"log"
 	"os"
@@ -9,11 +8,10 @@ import (
 	"strings"
 	"MailSenderG/internal/Price"
 	"MailSenderG/internal/SpreadSheet"
-	_"MailSenderG/internal/Mail"
-	_"MailSenderG/data/ConstData"
 	"MailSenderG/infrastructure"
 	"MailSenderG/data/StructData"
 	"MailSenderG/usecase"
+	_"MailSenderG/domain/model"
 	"time"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -23,7 +21,7 @@ import (
 
 
 func main() {
-	// if file exists 	
+	// if file exists	
 	f := "./.env"
 	if _, err := os.Stat(f); err == nil {
 		err_read := godotenv.Load(f)
@@ -35,13 +33,7 @@ func main() {
 	} else {
 		fmt.Println(".env is not existed")
 	}		
-	
-	// TODO
-	sheetRepo := infrastructure.NewSheetRepository()	
-	sheet := Usecase.NewSheetService(sheetRepo)
-	vStruct := reflect.Indirect(reflect.ValueOf(SpreadSheet.RetSheetNameStruct()))
-	vType := vStruct.Type()
-
+	fmt.Println(infrastructure.NewMailRepository())
 	// TODO 先月の日付取得
 	t := time.Now() // 現在時刻を実行環境のタイムゾーンで取得
 	lastMonth := t.AddDate(0,-1,0).Format("200601")
@@ -51,9 +43,18 @@ func main() {
 	totalMiPrice := 0
 	costs := map[string]StructData.SheetData{}
 	
-	for g :=0; g<vType.NumField(); g++ {
-		ft := vType.Field(g)		
-		fv := vStruct.FieldByName(ft.Name)
+	// TODO
+	sheetRepo := infrastructure.NewSheetRepository()	
+	sheet := Usecase.NewSheetService(sheetRepo)	
+	vStruct := reflect.Indirect(reflect.ValueOf(SpreadSheet.RetSheetNameStruct()))
+	vType := vStruct.Type() // Typeインターフェース
+	vFieldNum := vType.NumField()
+
+	// reflectでの処理 , NumField()でフィールド数の取得
+	for g :=0; g<vFieldNum; g++ {
+		// Field(index)でft.Nameで構造体のフィールド名を取得できる
+		ft := vType.Field(g)
+		fv := vStruct.FieldByName(ft.Name) // フィールドの値を取得できる
 		costMap := sheet.Read(sheet.SetCost(fv.String()))
 		costLastMonth := Price.GetLastMonthPrice(costMap, lastMonth, fv.String())
 		costs[fv.String()] = costLastMonth[fv.String()]
@@ -61,6 +62,8 @@ func main() {
 		totalMiPrice += Price.ReturnPrice(costLastMonth[fv.String()].MPrice)
 	}
 	
+	
+
 	// TODO
 	TOS := strings.Split(os.Getenv("TOS"), ",")
 	FROM := os.Getenv("FROM")
