@@ -5,18 +5,15 @@ import (
 	"log"
 	"os"
 	"reflect"
-	"strings"
 	"MailSenderG/internal/Price"
 	"MailSenderG/internal/SpreadSheet"
-	"MailSenderG/infrastructure"
+	"MailSenderG/infrastructure/mail"
+	"MailSenderG/infrastructure/sheet"
 	"MailSenderG/data/StructData"
-	"MailSenderG/usecase"
-	_"MailSenderG/domain/model"
+	"MailSenderG/usecase/sheet"
+	"MailSenderG/domain/model/mail"
 	"time"
-	"github.com/sendgrid/sendgrid-go"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"github.com/joho/godotenv"
-	"strconv"
 )
 
 
@@ -33,7 +30,7 @@ func main() {
 	} else {
 		fmt.Println(".env is not existed")
 	}		
-	fmt.Println(infrastructure.NewMailRepository())
+	
 	// TODO 先月の日付取得
 	t := time.Now() // 現在時刻を実行環境のタイムゾーンで取得
 	lastMonth := t.AddDate(0,-1,0).Format("200601")
@@ -44,9 +41,9 @@ func main() {
 	costs := map[string]StructData.SheetData{}
 	
 	// TODO
-	sheetRepo := infrastructure.NewSheetRepository()	
-	sheet := Usecase.NewSheetService(sheetRepo)	
-	vStruct := reflect.Indirect(reflect.ValueOf(SpreadSheet.RetSheetNameStruct()))
+	sheetRepo := sheetInfra.NewSheetRepository()	
+	sheet := sheetService.NewSheetService(sheetRepo)	
+	vStruct := reflect.Indirect(reflect.ValueOf(spreadSheet.RetSheetNameStruct()))
 	vType := vStruct.Type() // Typeインターフェース
 	vFieldNum := vType.NumField()
 
@@ -62,57 +59,25 @@ func main() {
 		totalMiPrice += Price.ReturnPrice(costLastMonth[fv.String()].MPrice)
 	}
 	
-	
-
-	// TODO
-	TOS := strings.Split(os.Getenv("TOS"), ",")
-	FROM := os.Getenv("FROM")
-	
-	// メッセージの構築
-	message := mail.NewV3Mail()
-	// 送信元を設定
-	from := mail.NewEmail("", FROM)
-	message.SetFrom(from)
-
-	// 1つ目の宛先と、対応するSubstitutionタグを指定
-	p := mail.NewPersonalization()
-	to := mail.NewEmail("", TOS[0])
-	p.AddTos(to)
-	p.SetSubstitution("%fullname%", os.Getenv("SEND_LIST_1"))
-	p.SetSubstitution("%familyname%", os.Getenv("SEND_LIST_1"))
-	message.AddPersonalizations(p)
-
-	// // 2つ目の宛先と、対応するSubstitutionタグを指定
-	p2 := mail.NewPersonalization()
-	to2 := mail.NewEmail("", TOS[1])
-	p2.AddTos(to2)
-	p2.SetSubstitution("%fullname%", os.Getenv("SEND_LIST_2"))
-	p2.SetSubstitution("%familyname%", os.Getenv("SEND_LIST_2"))
-	message.AddPersonalizations(p2)
-
-	// 件名を設定
-	message.Subject = os.Getenv("MAIL_SUBJECT")
 	diffPrice := Price.CheckDiffPrice(totalMiPrice, totalTaPrice)
-
-	var mailHeaderHtml = os.Getenv("MAIL_HEADER")
-	var mailTaHtml = "<strong>👨‍💻【" + os.Getenv("SEND_LIST_1") + "】👨‍💻</strong><br>" + "食費: " + costs["食費"].TPrice + "<br>" + "日用品: " + costs["日用品"].TPrice + "<br>" + "雑費: " + costs["雑費"].TPrice + "<br>" + "水道費: " + costs["水道費"].TPrice + "<br>" + "光熱費: " + costs["光熱費"].TPrice + "<br>" + "家賃: " + costs["家賃"].TPrice + "<br>" + "【合計】 : " + strconv.Itoa(totalTaPrice) + "<br><br>"
-	var mailMiHtml = "<strong>🤷‍♀【" + os.Getenv("SEND_LIST_2") + "】🤷‍♀️</strong><br>" + "食費: " + costs["食費"].MPrice + "<br>" + "日用品: " + costs["日用品"].MPrice + "<br>" + "雑費: " + costs["雑費"].MPrice + "<br>" + "水道費: " + costs["水道費"].MPrice + "<br>" + "光熱費: " + costs["光熱費"].MPrice + "<br>" + "家賃: " + costs["家賃"].MPrice + "<br>" + "【合計】 : " + strconv.Itoa(totalMiPrice) + "<br><br>"	
-	var mailDiffHtml = "差分: 💴" + strconv.Itoa(diffPrice) + "<br><br>"
-	var mailPokioCommentHtml = os.Getenv("MAIL_PO_COMMENT_HTML")
-	c := mail.NewContent("text/html",mailHeaderHtml + mailTaHtml + mailMiHtml + mailDiffHtml + mailPokioCommentHtml)
-	message.AddContent(c)
-
-	// メール送信を行い、レスポンスを表示
-	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
-
-	response, err := client.Send(message)
-	if err != nil {
-		log.Println(err)
-	} else {
-		fmt.Println(response.StatusCode)
-		fmt.Println(response.Body)
-		fmt.Println(response.Headers)
-	}
+	// domain mailで定数取得
+	mailInfo := mailModel.CreateMailInfo()
+	// mail repositoryの各メソッドにdomain mailの定数を渡す
+	mailRepo := mailInfra.NewMailRepository()
+	sgContents := mailRepo.SetupSendGridMail()
+	mailRepo.SetupMailFrom(sgContents, mailInfo.From)
+	mailRepo.SetupMailTo(sgContents, mailInfo.To)
+	mailRepo.SetupMailSubject(sgContents,mailInfo.Subject)
+	header := mailRepo.SetupMailHeader(mailInfo.Header)
+	readySgContents := mailRepo.SetupMailBody(
+		sgContents, 
+		header, 
+		diffPrice, 
+		costs,
+		totalTaPrice,
+		totalMiPrice,
+	)
+	mailModel.SendMail(readySgContents)
 
 	// go mapでのループ処理はランダム出力される。。
 	// https://free-engineer.life/golang-map-for-loops/

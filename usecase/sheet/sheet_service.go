@@ -1,16 +1,16 @@
-package Usecase
+package sheetService
 
 import (
 	_"fmt"
 	"MailSenderG/data/StructData"
-	"MailSenderG/infrastructure"	
+	"MailSenderG/infrastructure/sheet"	
 )
 
 type sheetService struct {
-	SheetRepo *infrastructure.SheetRepository
+	SheetRepo *sheetInfra.SheetRepository
 }
 
-func NewSheetService(repos *infrastructure.SheetRepository) *sheetService {
+func NewSheetService(repos *sheetInfra.SheetRepository) *sheetService {
 	return &sheetService{
 		SheetRepo: repos,
 	}	

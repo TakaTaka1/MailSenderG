@@ -1,4 +1,4 @@
-package SpreadSheet
+package spreadSheet
 
 import (
 	_"fmt"	
