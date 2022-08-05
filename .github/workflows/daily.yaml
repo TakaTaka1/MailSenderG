@@ -1,0 +1,19 @@
+name: Create daily work issue
+on:
+#   schedule:
+#   - cron: '0 0 * * MON-FRI' # 毎日動かしたい場合は、3行目、4行目のコメントアウトを外す
+  workflow_dispatch:
+jobs:
+  create_daily_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+      - uses: actions/checkout@v3
+      - name: create issue by template
+        uses: .github/daily-template.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          filename: .github/daily-template.md
+
+
