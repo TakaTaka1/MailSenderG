@@ -13,14 +13,14 @@ import (
 
 type SheetRepository struct {
 }
+
 // ポインタ型として返す
 func NewSheetRepository() *SheetRepository{
 	return &SheetRepository{}
 }
 
 // TODO
-func (sp *SheetRepository) prepSheet() *sheets.Service{
-	// SHEET_ID := os.Getenv("SHEET_ID")
+func (sp *SheetRepository) prepSheet() *sheets.Service{	
 	file, _ := json.Marshal(Utils.SetSheetCredentials())
 	_ = os.WriteFile("./secret.json", file, 0644)
 	credential := option.WithCredentialsFile("./secret.json")

@@ -1,7 +1,7 @@
 package Mail
 
-import _"fmt"
+import _ "fmt"
 
-func RetMail () string {
+func RetMail() string {
 	return "Mail"
 }
