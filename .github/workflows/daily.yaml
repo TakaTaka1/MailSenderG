@@ -10,7 +10,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: create issue by template
-        uses: .github/daily-template.md
+        uses: TakaTaka1/MailSenderG
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
