@@ -10,7 +10,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: create issue by template
-        uses: JasonEtco/create-an-issue@5d9504915f79f9cc6d791934b8ef34f2353dd74d
+        uses: TakaTaka1/MailSenderG/commit/ad01b8a72baa5d4857c9741944ed2f6bcc2ea6b4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
