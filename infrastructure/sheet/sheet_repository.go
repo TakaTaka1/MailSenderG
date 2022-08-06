@@ -2,15 +2,16 @@ package sheetInfra
 
 import (
 	"MailSenderG/data/StructData"
-	"MailSenderG/utils"
+	Utils "MailSenderG/utils"
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
+	"os"
+
 	_ "golang.org/x/oauth2/google"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
-	"log"
-	"os"
 )
 
 type SheetRepository struct {
@@ -31,7 +32,7 @@ func (sp *SheetRepository) prepCredentials() (*sheets.Service, error) {
 	}
 
 	// TODO credentialの読み込みをWithCredentialsで実行する方法
-	//ctx := context.Background()
+	// ctx := context.Background()
 	// credential, _ := google.CredentialsFromJSON(ctx, file)
 	// optcredential := option.WithCredentials(credential)
 	credential := option.WithCredentialsFile("./cd/secret.json")

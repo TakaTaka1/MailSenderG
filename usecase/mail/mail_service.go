@@ -1,7 +1,7 @@
 package mailService
 
 import (
-	"MailSenderG/infrastructure/mail"
+	mailInfra "MailSenderG/infrastructure/mail"
 )
 
 type mailService struct {

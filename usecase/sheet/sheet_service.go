@@ -2,7 +2,7 @@ package sheetService
 
 import (
 	"MailSenderG/data/StructData"
-	"MailSenderG/infrastructure/sheet"
+	sheetInfra "MailSenderG/infrastructure/sheet"
 	_ "fmt"
 )
 

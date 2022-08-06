@@ -2,10 +2,11 @@ package mailInfra
 
 import (
 	"MailSenderG/data/StructData"
-	"MailSenderG/domain/model/mail"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
+	mailModel "MailSenderG/domain/model/mail"
 	"os"
 	"strconv"
+
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
 type MailRepository struct {

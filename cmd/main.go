@@ -2,18 +2,19 @@ package main
 
 import (
 	"MailSenderG/data/StructData"
-	"MailSenderG/domain/model/mail"
-	"MailSenderG/infrastructure/mail"
-	"MailSenderG/infrastructure/sheet"
+	mailModel "MailSenderG/domain/model/mail"
+	mailInfra "MailSenderG/infrastructure/mail"
+	sheetInfra "MailSenderG/infrastructure/sheet"
 	"MailSenderG/internal/Price"
-	"MailSenderG/internal/SpreadSheet"
-	"MailSenderG/usecase/sheet"
+	spreadSheet "MailSenderG/internal/SpreadSheet"
+	sheetService "MailSenderG/usecase/sheet"
 	"fmt"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"reflect"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {

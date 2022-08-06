@@ -2,11 +2,12 @@ package mailModel
 
 import (
 	"fmt"
-	"github.com/sendgrid/sendgrid-go"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
 type MailInfo struct {
