@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	_ "golang.org/x/oauth2/google"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 	"log"
@@ -29,6 +30,10 @@ func (sp *SheetRepository) prepCredentials() (*sheets.Service, error) {
 		return nil, err
 	}
 
+	// TODO credentialの読み込みをWithCredentialsで実行する方法
+	//ctx := context.Background()
+	// credential, _ := google.CredentialsFromJSON(ctx, file)
+	// optcredential := option.WithCredentials(credential)
 	credential := option.WithCredentialsFile("./cd/secret.json")
 	srv, err := sheets.NewService(context.TODO(), credential)
 	if err != nil {
@@ -36,7 +41,7 @@ func (sp *SheetRepository) prepCredentials() (*sheets.Service, error) {
 		if errRemove != nil {
 			return nil, errRemove
 		}
-		return srv, err
+		return nil, err
 	}
 
 	errRemove := os.Remove("./cd/secret.json")
