@@ -51,7 +51,10 @@ func main() {
 		// Field(index)でft.Nameで構造体のフィールド名を取得できる
 		ft := vType.Field(g)
 		fv := vStruct.FieldByName(ft.Name) // フィールドの値を取得できる
-		costMap := sheet.Read(sheet.SetCost(fv.String()))
+		costMap, err := sheet.Read(sheet.SetCost(fv.String()))
+		if err != nil {
+			log.Fatalln(err)
+		}
 		costLastMonth := Price.GetLastMonthPrice(costMap, lastMonth, fv.String())
 		costs[fv.String()] = costLastMonth[fv.String()]
 		totalTaPrice += Price.ReturnPrice(costLastMonth[fv.String()].TPrice)

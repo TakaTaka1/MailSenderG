@@ -16,7 +16,7 @@ func NewSheetService(repos *sheetInfra.SheetRepository) *sheetService {
 	}
 }
 
-func (s *sheetService) Read(sheetNameRange string) map[int]StructData.SheetData {
+func (s *sheetService) Read(sheetNameRange string) (map[int]StructData.SheetData, error) {
 	return s.SheetRepo.RetSheetData(sheetNameRange)
 }
 

@@ -5,6 +5,7 @@ import (
 	"MailSenderG/utils"
 	"context"
 	"encoding/json"
+	"fmt"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 	"log"
@@ -20,27 +21,46 @@ func NewSheetRepository() *SheetRepository {
 }
 
 // TODO
-func (sp *SheetRepository) prepSheet() *sheets.Service {
+func (sp *SheetRepository) prepCredentials() (*sheets.Service, error) {
 	file, _ := json.Marshal(Utils.SetSheetCredentials())
-	_ = os.WriteFile("./secret.json", file, 0644)
-	credential := option.WithCredentialsFile("./secret.json")
+
+	err := os.WriteFile("./cd/secret.json", file, 0644)
+	if err != nil {
+		return nil, err
+	}
+
+	credential := option.WithCredentialsFile("./cd/secret.json")
 	srv, err := sheets.NewService(context.TODO(), credential)
 	if err != nil {
-		log.Fatal(err)
+		errRemove := os.Remove("./cd/secret.json")
+		if errRemove != nil {
+			return nil, errRemove
+		}
+		return srv, err
 	}
-	_ = os.Remove("./secret.json")
-	return srv
+
+	errRemove := os.Remove("./cd/secret.json")
+	if errRemove != nil {
+		fmt.Println("removed!!")
+		return nil, errRemove
+	}
+	return srv, nil
 }
 
-func (sp *SheetRepository) RetSheetData(sheetNameRange string) map[int]StructData.SheetData {
+func (sp *SheetRepository) RetSheetData(sheetNameRange string) (map[int]StructData.SheetData, error) {
 	SHEET_ID := os.Getenv("SHEET_ID")
-	srv := sp.prepSheet()
+	srv, err := sp.prepCredentials()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
 	resp, err := srv.Spreadsheets.Values.Get(SHEET_ID, sheetNameRange).Do()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return nil, err
 	}
 	if len(resp.Values) == 0 {
-		log.Fatalln("data not found")
+		log.Println("data not found")
 	}
 	var dataMap = make(map[int]StructData.SheetData)
 	for i, row := range resp.Values {
@@ -51,5 +71,5 @@ func (sp *SheetRepository) RetSheetData(sheetNameRange string) map[int]StructDat
 			row[3].(string),
 			row[4].(string)}
 	}
-	return dataMap
+	return dataMap, nil
 }
