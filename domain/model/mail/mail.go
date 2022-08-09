@@ -17,8 +17,8 @@ type MailInfo struct {
 	Header  string
 }
 
-func CreateMailInfo() *MailInfo {
-	return &MailInfo{
+func CreateMailInfo() MailInfo {
+	return MailInfo{
 		To:      strings.Split(os.Getenv("TOS"), ","),
 		From:    os.Getenv("FROM"),
 		Subject: os.Getenv("MAIL_SUBJECT"),

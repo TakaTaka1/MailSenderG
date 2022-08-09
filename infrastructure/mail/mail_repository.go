@@ -20,12 +20,12 @@ func (mp *MailRepository) SetupSendGridMail() *mail.SGMailV3 {
 	return mail.NewV3Mail()
 }
 
-func (mp *MailRepository) SetupMailFrom(sg *mail.SGMailV3, mailInfo *mailModel.MailInfo) {
+func (mp *MailRepository) SetupMailFrom(sg *mail.SGMailV3, mailInfo mailModel.MailInfo) {
 	sgfrom := mail.NewEmail("", mailInfo.From)
 	sg.SetFrom(sgfrom)
 }
 
-func (mp *MailRepository) SetupMailTo(sg *mail.SGMailV3, mailInfo *mailModel.MailInfo) {
+func (mp *MailRepository) SetupMailTo(sg *mail.SGMailV3, mailInfo mailModel.MailInfo) {
 	p := mail.NewPersonalization()
 	to1 := mail.NewEmail("", mailInfo.To[0])
 	p.AddTos(to1)
@@ -42,11 +42,11 @@ func (mp *MailRepository) SetupMailTo(sg *mail.SGMailV3, mailInfo *mailModel.Mai
 	sg.AddPersonalizations(p2)
 }
 
-func (mp *MailRepository) SetupMailSubject(sg *mail.SGMailV3, mailInfo *mailModel.MailInfo) {
+func (mp *MailRepository) SetupMailSubject(sg *mail.SGMailV3, mailInfo mailModel.MailInfo) {
 	sg.Subject = mailInfo.Subject
 }
 
-func (mp *MailRepository) SetupMailHeader(mailInfo *mailModel.MailInfo) string {
+func (mp *MailRepository) SetupMailHeader(mailInfo mailModel.MailInfo) string {
 	return mailInfo.Header
 }
 
